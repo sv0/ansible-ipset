@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  author: Slavik Svyrydiuk
+  description: Install/configure ipset
+  license: GPL
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+
+    - name: Ubuntu
+      versions:
+        - focal
+
+  galaxy_tags:
+    - security
+    - firewall
+
+dependencies: []
