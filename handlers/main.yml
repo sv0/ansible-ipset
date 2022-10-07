@@ -1,0 +1,8 @@
+---
+- name: Reload ipset
+  systemd:
+    name: ipset
+
+- name: Reload iptables
+  systemd:
+    name: iptables
