@@ -1,8 +1,12 @@
 ---
 - name: Reload ipset
-  systemd:
+  ansible.builtin.systemd:
     name: ipset
+    state: restarted
+    enabled: true
 
 - name: Reload iptables
-  systemd:
+  ansible.builtin.systemd:
     name: iptables
+    state: restarted
+    enabled: true
