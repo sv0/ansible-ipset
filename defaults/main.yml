@@ -19,7 +19,10 @@ ipset_spamhaus_droplist: "{{ lookup('file', ipset_spamhaus_droplist_txt_file) }}
 
 ipset_countries:
   - br
+  - by
   - cn
+  - cz
   - in
   - ir
   - ru
+  - vn

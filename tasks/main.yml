@@ -1,0 +1,87 @@
+---
+- name: Set ipset_countries fact
+  set_fact:
+    ipset_countries: "{{ host_vars['ipset_countries'] | default(ipset_countries) }}"
+
+- name: Debug ipset_countries
+  debug:
+    var: ipset_countries
+    verbosity: 2
+
+- name: "Create directory {{ ipset_config_file | dirname }}"
+  file:
+    path: "{{ ipset_config_file | dirname }}"
+    state: directory
+    mode: 0755
+
+- name: Create cache directory in the inventory
+  ansible.builtin.file:
+    path: "{{ inventory_dir }}/.cache"
+    state: directory
+    mode: 0755
+  delegate_to: localhost
+
+- name: Install ipset
+  package:
+    name:
+      - ipset
+      - iptables
+
+# - include: debian.yml
+#   when: ansible_os_family == "Debian"
+
+# - include: dshield.yml
+#   when: ipset_enable_dshield_block_list
+
+# - include: firehol.yml
+#   when: ipset_enable_firehol_block_list
+
+- name: Debug
+  debug:
+    var: ansible_service_mgr
+
+# - include: spamhaus.yml
+#   when: ipset_spamhaus
+#   tags:
+#     - spamhaus
+
+- name: Include country tasks
+  include_tasks: country.yml
+  with_items: "{{ ipset_countries }}"
+  # when:
+  #   # - ipset_countries is defined
+  #   - "host_vars.get('ipset_countries', [])"
+  #     # - (ipset_countries)
+  tags:
+    - country
+
+- name: Debug ipset_country
+  debug:
+    var: ipset_country
+
+- name: "Create ipset rules {{ ipset_config_file }}"
+  template:
+    src: ipset.j2
+    dest: "{{ ipset_config_file }}"
+    mode: 0644
+
+# - name: restore ipset rules {{ ipset_config_file }}
+#   shell: ipset restore -exist < {{ ipset_config_file }}
+#   changed_when: ipset_clear
+
+- name: Create ipset systemd service
+  template:
+    src: ipset.service.j2
+    dest: /etc/systemd/system/ipset.service
+    mode: 0644
+  notify:
+    - Reload ipset
+  when: ansible_service_mgr == "systemd"
+
+- name: Enable ipset systemd service
+  service:
+    name: ipset
+    enabled: true
+    state: restarted
+    daemon_reload: true
+  when: ansible_service_mgr == "systemd"

@@ -5,7 +5,7 @@ galaxy_info:
   author: Slavik Svyrydiuk
   description: Install and configure ipset
   license: GPL
-  min_ansible_version: 2.12
+  min_ansible_version: '2.12'
 
   platforms:
     - name: Debian
@@ -15,9 +15,6 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - focal
-    - name: Void
-      versions:
-        - all
 
   galaxy_tags:
     - security
