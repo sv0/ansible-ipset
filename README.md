@@ -1,4 +1,4 @@
-ansible-ipset
+Ansible ipset
 =============
 
-To je ale README co?
+Ansible role to configure ipset.
