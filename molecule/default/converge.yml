@@ -1,7 +1,11 @@
 ---
 - name: Converge
   hosts: all
-  gather_facts: false
+
+  vars:
+    ipset_countries:
+      - cz
+  become: false
   tasks:
     - name: "Include ipset"
       ansible.builtin.include_role:
