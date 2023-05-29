@@ -1,12 +1,16 @@
 ---
+# - name: Reload systemd
+#   ansible.builtin.systemd:
+#     daemon_reload: true
+
 - name: Set ipset_countries fact
   set_fact:
     ipset_countries: "{{ host_vars['ipset_countries'] | default(ipset_countries) }}"
 
-- name: Debug ipset_countries
-  debug:
-    var: ipset_countries
-    verbosity: 2
+# - name: Debug ipset_countries
+#   debug:
+#     var: ipset_countries
+#     verbosity: 1
 
 - name: "Create directory {{ ipset_config_file | dirname }}"
   file:
@@ -21,29 +25,20 @@
     mode: 0755
   delegate_to: localhost
 
-- name: Install ipset
+- name: Update repository cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 60 # 86400
+
+- name: Install required packages
   package:
     name:
       - ipset
       - iptables
 
-# - include: debian.yml
-#   when: ansible_os_family == "Debian"
-
-# - include: dshield.yml
-#   when: ipset_enable_dshield_block_list
-
-# - include: firehol.yml
-#   when: ipset_enable_firehol_block_list
-
 - name: Debug
   debug:
     var: ansible_service_mgr
-
-# - include: spamhaus.yml
-#   when: ipset_spamhaus
-#   tags:
-#     - spamhaus
 
 - name: Include country tasks
   include_tasks: country.yml
@@ -55,9 +50,9 @@
   tags:
     - country
 
-- name: Debug ipset_country
-  debug:
-    var: ipset_country
+# - name: Debug ipset_country
+#   debug:
+#     var: ipset_country
 
 - name: "Create ipset rules {{ ipset_config_file }}"
   template:
@@ -77,6 +72,9 @@
   notify:
     - Reload ipset
   when: ansible_service_mgr == "systemd"
+  tags:
+    - notest
+    - molecule-notest
 
 - name: Enable ipset systemd service
   service:
@@ -85,3 +83,6 @@
     state: restarted
     daemon_reload: true
   when: ansible_service_mgr == "systemd"
+  tags:
+    - notest
+    - molecule-notest
