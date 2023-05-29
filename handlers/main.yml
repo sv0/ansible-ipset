@@ -4,9 +4,15 @@
     name: ipset
     state: restarted
     enabled: true
+  tags:
+    - notest
+    - molecule-notest
 
 - name: Reload iptables
   ansible.builtin.systemd:
     name: iptables
     state: restarted
     enabled: true
+  tags:
+    - notest
+    - molecule-notest
