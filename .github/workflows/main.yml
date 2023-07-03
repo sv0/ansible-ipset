@@ -1,5 +1,5 @@
 ---
-name: CI
+name: ci
 
 on:
   schedule:
@@ -19,7 +19,7 @@ defaults:
 
 jobs:
   deb:
-    name: "${{ matrix.platform }} / ansible: ${{ matrix.ansible-version }}"
+    name: "${{ matrix.platform }}"
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -30,7 +30,6 @@ jobs:
           - ubuntu-18
           # - ubuntu:20.04
           # - ubuntu:22.04
-          - '6.1'
         scenario:
           - default
 
