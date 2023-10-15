@@ -3,5 +3,5 @@ exclude_paths:
   - .cache/
   - .github/
 parseable: true
-skip_list:
+warn_list:
   - 'fqcn-builtins'
