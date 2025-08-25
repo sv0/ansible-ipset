@@ -1,9 +1,7 @@
 ---
-name: ci
+name: Main workflow
 
 on:
-  schedule:
-    - cron: "0 2 * * 0"
   workflow_dispatch:
   workflow_run:
     workflows:
@@ -55,15 +53,3 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           DISTRIBUTION: ${{ matrix.platform }}
-
-  publish:
-    if: github.ref == 'refs/heads/master'
-    needs:
-      - deb
-    runs-on: ubuntu-20.04
-    steps:
-      - name: galaxy
-        uses: robertdebock/galaxy-action@1.2.1
-        with:
-          galaxy_api_key: ${{ secrets.galaxy_api_key }}
-          git_branch: master  # default
