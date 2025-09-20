@@ -1,23 +1,16 @@
 ---
 - name: Download countries networks list
-  ansible.builtin.get_url:
-    url: "http://www.ipdeny.com/ipblocks/data/countries/{{ item }}.zone"
+  local_action:
+    module: ansible.builtin.get_url
+    url: "https://www.ipdeny.com/ipblocks/data/aggregated/{{ item }}-aggregated.zone"
     dest: "{{ inventory_dir }}/.cache/{{ item }}.zone"
-    mode: 0644
-  delegate_to: localhost
-
-# - name: Copy countries networks list
-#   ansible.builtin.copy:
-#     src: "{{ inventory_dir }}/.cache/{{ item }}.zone"
-#     dest: "{{ ipset_config_file | dirname }}/{{ item }}.zone"
-#     mode: 0644
+    mode: 0640
 
 - name: Read zone file
-  ansible.builtin.command:
-    "cat {{ inventory_dir }}/.cache/{{ item }}.zone"
+  local_action:
+    module: ansible.builtin.command
+    cmd: "cat {{ inventory_dir }}/.cache/{{ item }}.zone"
   register: ipset_zone
-  #  "cat {{ ipset_config_file | dirname }}/{{ item }}.zone"
-  delegate_to: localhost
   changed_when: false
 
 - name: Init var ipset_country
